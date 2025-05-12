@@ -26,6 +26,13 @@ jobs:
       - name: Get code
         uses: actions/checkout@v4
 
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: react-project/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('react-project/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
       # Runs a single command using the runners shell
       - name: Install NodeJS
         uses: actions/setup-node@v4
