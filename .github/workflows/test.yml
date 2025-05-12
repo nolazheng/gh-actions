@@ -43,3 +43,18 @@ jobs:
       #   run: |
       #     echo Add other actions to build,
       #     echo test, and deploy your project.
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: cd react-project && npm install
+      - name: Build
+        run: cd react-project && npm run build
+      - name: Deploy
+        run: echo "Deploying to GitHub Pages"
