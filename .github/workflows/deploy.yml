@@ -57,5 +57,12 @@ jobs:
         run: cd react-project && npm install
       - name: Build
         run: cd react-project && npm run build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            react-project/dist
+            react-project/package.json
       - name: Deploy
         run: echo "Deploying to GitHub Pages"
