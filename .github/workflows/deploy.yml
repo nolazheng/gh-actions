@@ -43,9 +43,11 @@ jobs:
       #   run: |
       #     echo Add other actions to build,
       #     echo test, and deploy your project.
-  deploy:
+  build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      js-file: ${{ steps.publish.outputs.js-file }}
     steps:
       - name: Get code
         uses: actions/checkout@v4
@@ -57,12 +59,26 @@ jobs:
         run: cd react-project && npm install
       - name: Build
         run: cd react-project && npm run build
+      - name: Publish js filename
+        id: publish
+        run: find react-project/dist/assets/*.js -type f -execdir echo '::set-output name=js-file::{}' ';'
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: |
-            react-project/dist
-            react-project/package.json
+          path: react-project/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+      - name: Output contents
+        run: ls -la
+      - name: Get js file
+        run: echo "${{ needs.build.outputs.js-file }}"
       - name: Deploy
         run: echo "Deploying to GitHub Pages"
